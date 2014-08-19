@@ -70,14 +70,14 @@ Option	      Default  	Description
 -f			: structure file [.gro] (required)
 -x			: trajectory file [.xtc]
 -o			: name of output folder
--b	50		: beginning time (ns) (the bilayer must exist by then!)
+-b		50	: beginning time (ns) (the bilayer must exist by then!)
 -e			: ending time (ns)	
 -t 		1	: process every t-frames
 
 Peptide selection
 -----------------------------------------------------
---penetratin	: to select penetratin
---transportan	: to select transportan
+--penetratin		: to select penetratin
+--transportan		: to select transportan
 
 Leaflet identification  
 -----------------------------------------------------
@@ -264,7 +264,7 @@ else:
 def set_lipids_beads():
 
 	global leaflet_sele_string
-	leaflet_sele_string = leaflet_beads['martini']
+	leaflet_sele_string = "name PO4 or name PO3 or name B1A"
 
 	return
 def load_MDA_universe():												#DONE
