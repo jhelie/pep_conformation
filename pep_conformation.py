@@ -411,7 +411,7 @@ def identify_proteins():
 	#create beads selection
 	if args.transportan:
 		b1 = proteins_sele[0].selectAtoms("bynum 1")
-		b2 = proteins_sele[0].selectAtoms("bynum 35")
+		b2 = proteins_sele[0].selectAtoms("bynum 31")
 		b3 = proteins_sele[0].selectAtoms("bynum 49")
 	if args.penetratin:
 		b1 = proteins_sele[0].selectAtoms("bynum 1")
@@ -502,19 +502,12 @@ def data_pep_conf():
 # core functions
 #=========================================================================================
 
-def get_z_coords(f_index):														
-	
-	global z_median
-	
+def detect_pep_conf(f_time):
+
+	#find middle membrane plane
 	tmp_zu = leaflet_sele["upper"]["all species"].centerOfGeometry()[2]
 	tmp_zl = leaflet_sele["lower"]["all species"].centerOfGeometry()[2]
 	z_median = tmp_zl + (tmp_zu - tmp_zl)/float(2)
-
-	z_upper[f_index] = tmp_zu - tmp_zm
-	z_lower[f_index] = tmp_zl - tmp_zm
-
-	return
-def detect_pep_conf(f_time):
 
 	#case: penetratin
 	#----------------
@@ -549,37 +542,36 @@ def detect_pep_conf(f_time):
 
 def write_xvg():
 	
-	for l_index in lipids_ff_u2l_index:
-		filename_xvg = os.getcwd() + '/' + str(args.output_folder) + '/pep_conformation.xvg'
-		output_xvg = open(filename_xvg, 'w')
-		output_xvg.write("# [pep_conformation v" + str(version_nb) + "]\n")
-		output_xvg.write("# The data is organised as follows:\n")
-		if args.penetratin:
-			output_xvg.write("#  - 0: surfacic\n")
-			output_xvg.write("#  - 1: TM\n")
-			output_xvg.write("@ title \"Evolution of penetratin conformation\"\n")
-		else:
-			output_xvg.write("#  - 0: surfacic\n")
-			output_xvg.write("#  - 1: TM\n")
-			output_xvg.write("#  - 2: TM*\n")
-			output_xvg.write("#  - 3: U-shape\n")
-			output_xvg.write("@ title \"Evolution of transportan conformation\"\n")
-		output_xvg.write("@ xaxis label \"time\"\n")
-		output_xvg.write("@ yaxis label \"confomration code\"\n")
-		output_xvg.write("@ autoscale ONREAD xaxes\n")
-		output_xvg.write("@ TYPE XY\n")
-		output_xvg.write("@ view 0.15, 0.15, 0.95, 0.85\n")
-		output_xvg.write("@ legend on\n")
-		output_xvg.write("@ legend box on\n")
-		output_xvg.write("@ legend loctype view\n")
-		output_xvg.write("@ legend 0.98, 0.8\n")
-		output_xvg.write("@ legend length 1\n")
-		output_xvg.write("@ s0 legend \"conformation\"\n")
-		for f_index in range(0,len(frames_time)):
-			f_time = frames_time[f_index]
-			results = str(f_time) + "	" + str(pep_conf[f_time])
-			output_xvg.write(results + "\n")
-		output_xvg.close()
+	filename_xvg = os.getcwd() + '/' + str(args.output_folder) + '/pep_conformation.xvg'
+	output_xvg = open(filename_xvg, 'w')
+	output_xvg.write("# [pep_conformation v" + str(version_nb) + "]\n")
+	output_xvg.write("# The data is organised as follows:\n")
+	if args.penetratin:
+		output_xvg.write("#  - 0: surfacic\n")
+		output_xvg.write("#  - 1: TM\n")
+		output_xvg.write("@ title \"Evolution of penetratin conformation\"\n")
+	else:
+		output_xvg.write("#  - 0: surfacic\n")
+		output_xvg.write("#  - 1: TM\n")
+		output_xvg.write("#  - 2: TM*\n")
+		output_xvg.write("#  - 3: U-shape\n")
+		output_xvg.write("@ title \"Evolution of transportan conformation\"\n")
+	output_xvg.write("@ xaxis label \"time\"\n")
+	output_xvg.write("@ yaxis label \"confomration code\"\n")
+	output_xvg.write("@ autoscale ONREAD xaxes\n")
+	output_xvg.write("@ TYPE XY\n")
+	output_xvg.write("@ view 0.15, 0.15, 0.95, 0.85\n")
+	output_xvg.write("@ legend on\n")
+	output_xvg.write("@ legend box on\n")
+	output_xvg.write("@ legend loctype view\n")
+	output_xvg.write("@ legend 0.98, 0.8\n")
+	output_xvg.write("@ legend length 1\n")
+	output_xvg.write("@ s0 legend \"conformation\"\n")
+	for f_index in range(0,len(frames_time)):
+		f_time = frames_time[f_index]
+		results = str(f_time) + "	" + str(pep_conf[f_time])
+		output_xvg.write(results + "\n")
+	output_xvg.close()
 
 	return
 
@@ -597,14 +589,13 @@ identify_proteins()
 identify_leaflets()
 
 #create data structures
-print "\nInitialising data structures..."
 data_struct_time()
 data_pep_conf()
 
 #=========================================================================================
 # generate data
 #=========================================================================================
-print "\nCalculating sizes sampled by flip-flopping lipids..."
+print "\nDetecting peptide conformation..."
 
 #case: gro file
 if args.xtcfilename == "no":	
