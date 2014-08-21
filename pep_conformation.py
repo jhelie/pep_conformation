@@ -36,6 +36,9 @@ The output is coded as follows:
 - penetratin: 0 surfacic, 1 TM
 - transportan: 0 surfacic, 1 TM, 2 TM*, 3 U-shape
 
+In case the --model option is used with --transportan, surfacic and TM (0 and 1) are the
+only two possible conformations.
+
 [ REQUIREMENTS ]
 
 The following python modules are needed :
@@ -78,6 +81,7 @@ Peptide selection
 -----------------------------------------------------
 --penetratin		: to select penetratin
 --transportan		: to select transportan
+--model			: to specify helical model (only useful for transportan)
 
 Leaflet identification  
 -----------------------------------------------------
@@ -101,6 +105,7 @@ parser.add_argument('-t', nargs=1, dest='frames_dt', default=[1], type=int, help
 #peptide selection
 parser.add_argument('--penetratin', dest='penetratin', action='store_true', help=argparse.SUPPRESS)
 parser.add_argument('--transportan', dest='transportan', action='store_true', help=argparse.SUPPRESS)
+parser.add_argument('--model', dest='model', action='store_true', help=argparse.SUPPRESS)
 
 #lipids identification options
 parser.add_argument('--leaflets', nargs=1, dest='cutoff_leaflet', default=['optimise'], help=argparse.SUPPRESS)
@@ -522,17 +527,25 @@ def detect_pep_conf(f_time):
 	#case: transportan
 	#-----------------
 	if args.transportan:
-		b1_pos = b1.centroid()[2] - z_median
-		b2_pos = b2.centroid()[2] - z_median
-		b3_pos = b3.centroid()[2] - z_median
-		if np.sign(b1_pos) == np.sign(b2_pos) and np.sign(b1_pos) == np.sign(b3_pos):
-			pep_conf[f_time] = 0
-		elif np.sign(b1_pos) == np.sign(b2_pos):
-			pep_conf[f_time] = 1
-		elif np.sign(b2_pos) == np.sign(b3_pos):
-			pep_conf[f_time] = 2
-		elif np.sign(b1_pos) == np.sign(b3_pos):
-			pep_conf[f_time] = 3
+		if args.model:
+			b1_pos = b1.centroid()[2] - z_median
+			b3_pos = b3.centroid()[2] - z_median
+			if np.sign(b1_pos) == np.sign(b3_pos):
+				pep_conf[f_time] = 0
+			else:
+				pep_conf[f_time] = 1
+		else:
+			b1_pos = b1.centroid()[2] - z_median
+			b2_pos = b2.centroid()[2] - z_median
+			b3_pos = b3.centroid()[2] - z_median
+			if np.sign(b1_pos) == np.sign(b2_pos) and np.sign(b1_pos) == np.sign(b3_pos):
+				pep_conf[f_time] = 0
+			elif np.sign(b1_pos) == np.sign(b2_pos):
+				pep_conf[f_time] = 1
+			elif np.sign(b2_pos) == np.sign(b3_pos):
+				pep_conf[f_time] = 2
+			elif np.sign(b1_pos) == np.sign(b3_pos):
+				pep_conf[f_time] = 3
 
 	return
 
