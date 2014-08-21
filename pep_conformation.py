@@ -555,7 +555,7 @@ def detect_pep_conf(f_time):
 
 def write_xvg():
 	
-	filename_xvg = os.getcwd() + '/' + str(args.output_folder) + '/pep_conformation.xvg'
+	filename_xvg = os.getcwd() + '/' + str(args.output_folder) + '/' + str(args.output_folder) + '.xvg'
 	output_xvg = open(filename_xvg, 'w')
 	output_xvg.write("# [pep_conformation v" + str(version_nb) + "]\n")
 	output_xvg.write("# The data is organised as follows:\n")
