@@ -73,7 +73,7 @@ Option	      Default  	Description
 -f			: structure file [.gro] (required)
 -x			: trajectory file [.xtc]
 -o			: name of output folder
--b		50	: beginning time (ns) (the bilayer must exist by then!)
+-b			: beginning time (ns) (the bilayer must exist by then!)
 -e			: ending time (ns)	
 -t 		1	: process every t-frames
 
@@ -98,7 +98,7 @@ Other options
 parser.add_argument('-f', nargs=1, dest='grofilename', default=['no'], help=argparse.SUPPRESS, required=True)
 parser.add_argument('-x', nargs=1, dest='xtcfilename', default=['no'], help=argparse.SUPPRESS)
 parser.add_argument('-o', nargs=1, dest='output_folder', default=['no'], help=argparse.SUPPRESS)
-parser.add_argument('-b', nargs=1, dest='t_start', default=[20], type=int, help=argparse.SUPPRESS)
+parser.add_argument('-b', nargs=1, dest='t_start', default=[-1], type=int, help=argparse.SUPPRESS)
 parser.add_argument('-e', nargs=1, dest='t_end', default=[10000000000000], type=int, help=argparse.SUPPRESS)
 parser.add_argument('-t', nargs=1, dest='frames_dt', default=[1], type=int, help=argparse.SUPPRESS)
 
